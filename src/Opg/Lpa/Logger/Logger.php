@@ -14,6 +14,8 @@ class Logger extends ZendLogger
 {
     public function __construct($logFilename)
     {
+        parent::__construct();
+        
         $logWriter = new Stream($logFilename);
         $formatter = new Logstash();
         

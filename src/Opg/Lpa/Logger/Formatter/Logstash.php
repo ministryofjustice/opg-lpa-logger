@@ -3,9 +3,41 @@ namespace Opg\Lpa\Logger\Formatter;
 
 use Zend\Log\Formatter\FormatterInterface;
 use DateTime;
+use Zend\Escaper\Escaper;
 
 class Logstash implements FormatterInterface
 {
+    /**
+     * @var Escaper instance
+     */
+    protected $escaper;
+    
+    /**
+     * @var string Encoding to use in JSON
+     */
+    protected $encoding;
+    
+    /**
+     * Format specifier for DateTime objects in event data (default: ISO 8601)
+     *
+     * @see http://php.net/manual/en/function.date.php
+     * @var string
+     */
+    protected $dateTimeFormat = self::DEFAULT_DATETIME_FORMAT;
+    
+    /**
+     * Class constructor
+     * (the default encoding is UTF-8)
+     */
+    public function __construct($options = [])
+    {
+        if (!array_key_exists('encoding', $options)) {
+            $options['encoding'] = 'UTF-8';
+        }
+        
+        $this->setEncoding($options['encoding']);
+    }
+    
     /**
      * Formats data into a single line to be written by the writer.
      *
@@ -18,22 +50,14 @@ class Logstash implements FormatterInterface
             $event['timestamp'] = $event['timestamp']->format($this->getDateTimeFormat());
         }
     
-        if ($this->elementMap === null) {
-            $dataToInsert = $event;
-        } else {
-            $dataToInsert = array();
-            foreach ($this->elementMap as $elementName => $fieldKey) {
-                $dataToInsert[$elementName] = $event[$fieldKey];
-            }
-        }
+        $dataToInsert = $event;
     
-        $enc     = $this->getEncoding();
         $escaper = $this->getEscaper();
         
         $logstashArray = [
             '@version' => 1,
             '@timestamp' =>  $event['timestamp'],
-            'host' => $_SERVER['HTTP_HOST'],
+            'host' => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'N/A',
         ];
         
         foreach ($dataToInsert as $key => $value) {
@@ -52,7 +76,56 @@ class Logstash implements FormatterInterface
     
         $json = json_encode($logstashArray);
             
-        return $json . PHP_EOL;
+        return $json;
+    }
+
+    /**
+     * Get encoding
+     *
+     * @return string
+     */
+    public function getEncoding()
+    {
+        return $this->encoding;
+    }
+    
+    /**
+     * Set encoding
+     *
+     * @param string $value
+     * @return Logstash
+     */
+    public function setEncoding($value)
+    {
+        $this->encoding = (string) $value;
+        return $this;
+    }
+    
+    /**
+     * Set Escaper instance
+     *
+     * @param  Escaper $escaper
+     * @return Xml
+     */
+    public function setEscaper(Escaper $escaper)
+    {
+        $this->escaper = $escaper;
+        return $this;
+    }
+    
+    /**
+     * Get Escaper instance
+     *
+     * Lazy-loads an instance with the current encoding if none registered.
+     *
+     * @return Escaper
+     */
+    public function getEscaper()
+    {
+        if (null === $this->escaper) {
+            $this->setEscaper(new Escaper($this->getEncoding()));
+        }
+        return $this->escaper;
     }
     
     /**

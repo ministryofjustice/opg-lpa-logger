@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Opg\\Lpa\\Api\\Client\\' => array($baseDir . '/src/Opg/Lpa/Api/Client'),
+    'Opg\\Lpa\\Logger\\' => array($baseDir . '/src/Opg/Lpa/Logger'),
 );

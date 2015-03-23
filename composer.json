@@ -1,0 +1,22 @@
+{
+    "name": "ministryofjustice/opg-lpa-logger",
+    "description": "Common logger component for OPG LPA modules",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4.0",
+        "zendframework/zend-log": "2.3.*@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.3.*",
+        "phpspec/phpspec": "~2.0"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-4": {"Opg\\Lpa\\Api\\Client\\": "src/Opg/Lpa/Api/Client/"}
+    }
+}
+
+
+    

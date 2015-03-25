@@ -57,7 +57,8 @@ class Logstash implements FormatterInterface
         $logstashArray = [
             '@version' => 1,
             '@timestamp' =>  $event['timestamp'],
-            'host' => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'N/A',
+            'host' => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'Unknown',
+            'uri' => isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown',
         ];
         
         foreach ($dataToInsert as $key => $value) {

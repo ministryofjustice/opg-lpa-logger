@@ -1485,5 +1485,59 @@
             "escaper",
             "zf2"
         ]
+    },
+    {
+        "name": "raven/raven",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/getsentry/raven-php.git",
+            "reference": "2b651d779cdbac8b6456b3b0f06c8c77e43f79dd"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/getsentry/raven-php/zipball/2b651d779cdbac8b6456b3b0f06c8c77e43f79dd",
+            "reference": "2b651d779cdbac8b6456b3b0f06c8c77e43f79dd",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.4"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "3.7.*"
+        },
+        "time": "2015-03-24 23:17:13",
+        "bin": [
+            "bin/raven"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.8.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Raven_": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD"
+        ],
+        "authors": [
+            {
+                "name": "David Cramer",
+                "email": "dcramer@gmail.com"
+            }
+        ],
+        "description": "A PHP client for Sentry (http://getsentry.com)",
+        "homepage": "http://getsentry.com",
+        "keywords": [
+            "log",
+            "logging"
+        ]
     }
 ]

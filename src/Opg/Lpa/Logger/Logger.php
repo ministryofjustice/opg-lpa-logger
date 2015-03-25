@@ -4,6 +4,7 @@ namespace Opg\Lpa\Logger;
 use Zend\Log\Logger as ZendLogger;
 use Zend\Log\Writer\Stream;
 use Opg\Lpa\Logger\Formatter\Logstash;
+use Opg\Lpa\Logger\Writer\Sentry;
 
 /**
  * class Logger
@@ -12,15 +13,31 @@ use Opg\Lpa\Logger\Formatter\Logstash;
  */
 class Logger extends ZendLogger 
 {
-    public function __construct($logFilename)
+    private $formatter;
+    
+    public function __construct()
     {
         parent::__construct();
-        
-        $logWriter = new Stream($logFilename);
-        $formatter = new Logstash();
-        
-        $logWriter->setFormatter($formatter);
-        
-        $this->addWriter($logWriter);
+        $this->formatter = new Logstash();
     }
+    
+    public function setFileLogPath($logFilename)
+    {
+        $this->addWriter(
+            new Stream($logFilename)
+        );
+    }
+    
+    public function setSentryUri($sentryApiKey)
+    {
+        $this->addWriter(
+            new Sentry($sentryApiKey)
+        );
+    }
+    
+    public function addWriter($logWriter)
+    {
+        $logWriter->setFormatter($this->formatter);
+        parent::addWriter($logWriter);
+    } 
 }

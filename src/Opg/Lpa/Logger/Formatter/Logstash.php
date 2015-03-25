@@ -8,11 +8,6 @@ use Zend\Escaper\Escaper;
 class Logstash implements FormatterInterface
 {
     /**
-     * @var Escaper instance
-     */
-    protected $escaper;
-    
-    /**
      * @var string Encoding to use in JSON
      */
     protected $encoding;
@@ -66,9 +61,7 @@ class Logstash implements FormatterInterface
                 || is_scalar($value)
                 || (is_object($value) && method_exists($value, '__toString'))
             ) {
-                if ($key == "message") {
-                    $value = $escaper->escapeHtml($value);
-                } elseif ($key == "extra" && empty($value)) {
+                if ($key == "extra" && empty($value)) {
                     continue;
                 }
                 $logstashArray[$key] = $value;

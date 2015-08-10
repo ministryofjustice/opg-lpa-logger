@@ -66,10 +66,10 @@ class Logstash implements FormatterInterface
         }
     
         if (isset($dataToInsert['extra'])) {
-            $extra = $dataToInsert['extra'];
+            $extra =    $dataToInsert['extra'];
         
             if (is_array($extra)) {
-                $logstashArray['extra'] = json_encode($extra);
+                $logstashArray['extra'] = $extra;
             }
         }
         

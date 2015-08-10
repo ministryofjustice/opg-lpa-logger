@@ -1,2 +1,5 @@
 tests/sentry.key
 .idea
+.buildpath
+.settings
+.project

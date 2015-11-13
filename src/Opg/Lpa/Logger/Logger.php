@@ -36,10 +36,10 @@ class Logger extends ZendLogger
         );
     }
     
-    public function setSnsCredentials($clientConfig, $topicArn) {
+    public function setSnsCredentials($clientConfig, $endpoints) {
         
         $this->addWriter(
-            new Sns($clientConfig, $topicArn)
+            new Sns($clientConfig, $endpoints)
         );
     }
     

@@ -11,6 +11,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $message1 = 'Hello world';
         $message2 = 'Hello again';
         $message3 = 'I am warning you';
+        $message4 = 'EMERGENCY!';
 
         $logger = new Logger();
         
@@ -18,12 +19,16 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         // It should be ignored by .gitignore
         if (file_exists('sns.credentials')) {
             $config = require('sns.credentials');
-            $logger->setSnsCredentials($config['client'], $config['topicArn']);
+            $logger->setSnsCredentials(
+                $config['client'],
+                $config['endpoints']
+            );
         }
     
         $logger->alert($message1);
         $logger->err($message2);
         $logger->warn($message3);
+        $logger->emerg($message4);
     }
     
     public function testMessageLoggingWithSentry()

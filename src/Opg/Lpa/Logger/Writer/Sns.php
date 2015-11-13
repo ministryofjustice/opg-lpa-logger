@@ -72,18 +72,22 @@ class Sns extends AbstractWriter
         }
     }
     
+    /**
+     * Send the SNS notification
+     * 
+     * @param string $endpoint
+     * @param array $event
+     * @param string $zendLogLevel
+     */
     private function sendSnsNotification($endpoint, $event, $zendLogLevel) {
         
         $result = $this->snsClient->publish(array(
             'TopicArn' => $endpoint,
-            // Message is required
             'Message' => $event['message'],
             'Subject' => 'OPG LPA Digital Service Alert',
             'MessageStructure' => 'string',
             'MessageAttributes' => array(
-                // Associative array of custom 'String' key names
                 'ZendLogLevel' => array(
-                    // DataType is required
                     'DataType' => 'String',
                     'StringValue' => $zendLogLevel,
                 ),

@@ -6,16 +6,23 @@ pipeline {
 
         stage('initial setup and newtag') {
             steps {
-                sh '''
-                    virtualenv venv
-                    . venv/bin/activate
-                    pip install git+https://github.com/ministryofjustice/semvertag.git@1.1.0
-                    git fetch --tags
-                    semvertag bump patch >> semvertag.txt
-                '''
-            script {
-                env.NEWTAG = readFile('semvertag.txt').trim()
-            }
+                script {
+                    if (env.BRANCH_NAME != "master") {
+                        env.STAGEARG = "--stage dev"
+                    }
+                }
+                script {
+                    sh '''
+                        virtualenv venv
+                        . venv/bin/activate
+                        pip install git+https://github.com/ministryofjustice/semvertag.git@1.1.0
+                        git fetch --tags
+                        semvertag bump patch >> semvertag.txt
+                    '''
+                }
+                script {
+                    env.NEWTAG = readFile('semvertag.txt').trim()
+                }
                 echo "NEWTAG will be ${env.NEWTAG}"
             }
         }
@@ -74,12 +81,54 @@ pipeline {
             }
         }
 
-        stage('conditional tag and push') {
-            when{
-                branch 'master' //Build master branch only
+        stage('Build, tag and push master image') {
+            when {
+                branch 'master'
             }
             steps {
-                echo 'Possibly tag master?'
+                script {
+                    sh '''
+                    docker build . -t registry.service.opg.digital/opguk/opg-lpa-logger
+                    docker tag registry.service.opg.digital/opguk/opg-lpa-logger \
+                        "registry.service.opg.digital/opguk/opg-lpa-logger:${NEWTAG}"
+                    '''
+                }
+                script {
+                    sh '''
+                      . venv/bin/activate
+                      docker push registry.service.opg.digital/opguk/opg-lpa-logger
+                      docker push "registry.service.opg.digital/opguk/opg-lpa-logger:${NEWTAG}"
+                    '''
+                }
+            }
+        }
+
+        stage('Build, tag and push non-master image') {
+            when{
+                not {
+                    branch 'master'
+                }
+            }
+            steps {
+                script {
+                    sh '''
+                    docker build . -t "registry.service.opg.digital/opguk/opg-lpa-logger:${NEWTAG}"
+                    '''
+                }
+                script {
+                    sh '''
+                      . venv/bin/activate
+                      docker push "registry.service.opg.digital/opguk/opg-lpa-logger:${NEWTAG}"
+                    '''
+                }
+            }
+        }
+
+        stage('Tag repo with build tag') {
+            steps {
+                sh '''
+                  semvertag tag ${NEWTAG}
+                '''
             }
         }
     }

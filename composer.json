@@ -6,7 +6,7 @@
     "prefer-stable": true,
     "require": {
         "php": "7.0.*",
-        "zendframework/zend-log": "2.7.*",
+        "zendframework/zend-log": "^2.5",
         "sentry/sentry": "<1.0.0",
         "aws/aws-sdk-php": "^3.0"
     },

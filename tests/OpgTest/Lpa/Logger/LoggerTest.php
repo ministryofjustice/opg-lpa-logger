@@ -3,9 +3,10 @@
 namespace OpgTest\Lpa\Logger;
 
 use Opg\Lpa\Logger\Logger;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_TestCase;
 
-class LoggerTest extends PHPUnit_Framework_TestCase
+class LoggerTest extends TestCase
 {
     private $fileLogPath = 'testlog.log';
 

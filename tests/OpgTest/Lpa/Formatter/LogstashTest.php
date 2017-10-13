@@ -4,10 +4,11 @@ namespace OpgTest\Lpa\Logger;
 
 use DateTime;
 use Opg\Lpa\Logger\Formatter\Logstash;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_TestCase;
 use Zend\Log\Formatter\FormatterInterface;
 
-class LogstashTest extends PHPUnit_Framework_TestCase
+class LogstashTest extends TestCase
 {
     /**
      * @var Logstash

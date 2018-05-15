@@ -1,9 +1,9 @@
 <?php
+
 namespace Opg\Lpa\Logger\Writer;
 
-use Zend\Log\Writer\AbstractWriter;
-
 use Raven_Client as Raven;
+use Zend\Log\Writer\AbstractWriter;
 
 class Sentry extends AbstractWriter
 {
@@ -20,7 +20,7 @@ class Sentry extends AbstractWriter
         'ALERT'     => Raven::FATAL,
         'EMERG'     => Raven::FATAL,
     ];
-    
+
     /**
      * Don't send messages with these log levels to Sentry
      */
@@ -30,9 +30,9 @@ class Sentry extends AbstractWriter
         'NOTICE',
         'WARN',
     ];
-    
+
     protected $raven;
-    
+
     /**
      * Constructor
      *
@@ -44,7 +44,7 @@ class Sentry extends AbstractWriter
         $this->raven = new Raven($sentryApiKey);
         parent::__construct($options);
     }
-    
+
     /**
      * Write a message to the log
      *
@@ -55,13 +55,13 @@ class Sentry extends AbstractWriter
     {
         $extra = array();
         $extra['timestamp'] = $event['timestamp'];
-        
+
         $zendLogLevel = $event['priorityName'];
-        
+
         if (!in_array($zendLogLevel, $this->ignoreLevels)) {
             $sentryLogLevel = $this->logLevels[$zendLogLevel];
             return $this->raven->captureMessage(
-                $event['message'], 
+                $event['message'],
                 [],
                 $sentryLogLevel,
                 false,

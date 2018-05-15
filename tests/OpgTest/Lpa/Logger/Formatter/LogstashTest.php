@@ -1,6 +1,6 @@
 <?php
 
-namespace OpgTest\Lpa\Logger;
+namespace OpgTest\Lpa\Logger\Formatter;
 
 use DateTime;
 use Opg\Lpa\Logger\Formatter\Logstash;

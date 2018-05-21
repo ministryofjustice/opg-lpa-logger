@@ -1,11 +1,10 @@
 <?php
 
-namespace OpgTest\Lpa\Logger;
+namespace OpgTest\Lpa\Logger\Formatter;
 
 use DateTime;
 use Opg\Lpa\Logger\Formatter\Logstash;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_TestCase;
 use Zend\Log\Formatter\FormatterInterface;
 
 class LogstashTest extends TestCase
@@ -77,6 +76,29 @@ class LogstashTest extends TestCase
             'uri' => 'Unknown',
             'message' => 'Alert',
             'extra' => 'Extra',
+            'timestamp' => $now->format(FormatterInterface::DEFAULT_DATETIME_FORMAT)
+        ];
+
+        $this->assertEquals(json_encode($expected), $formatted);
+    }
+
+    public function testFormatEventStringExtraEmpty()
+    {
+        $now = new DateTime();
+        $event = [
+            'message' => 'Alert',
+            'extra' => '',
+            'timestamp' => $now
+        ];
+
+        $formatted = $this->formatter->format($event);
+
+        $expected = [
+            '@version' => 1,
+            '@timestamp' => $now->format(FormatterInterface::DEFAULT_DATETIME_FORMAT),
+            'host' => 'Unknown',
+            'uri' => 'Unknown',
+            'message' => 'Alert',
             'timestamp' => $now->format(FormatterInterface::DEFAULT_DATETIME_FORMAT)
         ];
 

@@ -1,8 +1,9 @@
 <?php
+
 namespace Opg\Lpa\Logger\Writer;
 
-use Zend\Log\Writer\AbstractWriter;
 use Aws\Sns\SnsClient;
+use Zend\Log\Writer\AbstractWriter;
 
 class Sns extends AbstractWriter
 {

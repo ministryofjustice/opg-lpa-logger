@@ -1,4 +1,5 @@
 <?php
+
 namespace Opg\Lpa\Logger\Formatter;
 
 use Zend\Log\Formatter\FormatterInterface;
@@ -10,7 +11,7 @@ class Logstash implements FormatterInterface
      * @var string Encoding to use in JSON
      */
     protected $encoding;
-    
+
     /**
      * Format specifier for DateTime objects in event data (default: ISO 8601)
      *
@@ -18,7 +19,7 @@ class Logstash implements FormatterInterface
      * @var string
      */
     protected $dateTimeFormat = self::DEFAULT_DATETIME_FORMAT;
-    
+
     /**
      * Class constructor
      * (the default encoding is UTF-8)
@@ -28,10 +29,10 @@ class Logstash implements FormatterInterface
         if (!array_key_exists('encoding', $options)) {
             $options['encoding'] = 'UTF-8';
         }
-        
+
         $this->setEncoding($options['encoding']);
     }
-    
+
     /**
      * Formats data into a single line to be written by the writer.
      *
@@ -43,16 +44,16 @@ class Logstash implements FormatterInterface
         if (isset($event['timestamp']) && $event['timestamp'] instanceof DateTime) {
             $event['timestamp'] = $event['timestamp']->format($this->getDateTimeFormat());
         }
-    
+
         $dataToInsert = $event;
-    
+
         $logstashArray = [
             '@version' => 1,
             '@timestamp' =>  $event['timestamp'],
             'host' => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'Unknown',
             'uri' => isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown',
         ];
-        
+
         foreach ($dataToInsert as $key => $value) {
             if (empty($value)
                 || is_scalar($value)
@@ -64,17 +65,17 @@ class Logstash implements FormatterInterface
                 $logstashArray[$key] = $value;
             }
         }
-    
+
         if (isset($dataToInsert['extra'])) {
             $extra =    $dataToInsert['extra'];
-        
+
             if (is_array($extra) && !empty($extra)) {
                 $logstashArray['extra'] = $extra;
             }
         }
-        
+
         $json = json_encode($logstashArray);
-            
+
         return $json;
     }
 
@@ -87,7 +88,7 @@ class Logstash implements FormatterInterface
     {
         return $this->encoding;
     }
-    
+
     /**
      * Set encoding
      *
@@ -99,7 +100,7 @@ class Logstash implements FormatterInterface
         $this->encoding = (string) $value;
         return $this;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -107,7 +108,7 @@ class Logstash implements FormatterInterface
     {
         return $this->dateTimeFormat;
     }
-    
+
     /**
      * {@inheritDoc}
      */

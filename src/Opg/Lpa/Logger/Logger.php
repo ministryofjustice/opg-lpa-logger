@@ -3,12 +3,13 @@
 namespace Opg\Lpa\Logger;
 
 use Zend\Log\Logger as ZendLogger;
-use Zend\Log\Writer\Stream;
+use Zend\Log\Writer\Stream as StreamWriter;
+use Zend\Log\Formatter\Simple as SimpleFormatter;
 
 /**
  * class Logger
  *
- * A simple logstash file logger
+ * A simple StreamWriter file logger
  */
 class Logger extends ZendLogger
 {
@@ -18,36 +19,21 @@ class Logger extends ZendLogger
     private static $instance = null;
 
     /**
-     * @var Formatter\Logstash
-     */
-    private $formatter;
-
-    /**
      * Logger constructor
      *
-     * @param string|null $fileLogPath
-     * @param string|null $sentryUri
      */
-    public function __construct(string $fileLogPath = null, string $sentryUri = null)
+    public function __construct()
     {
         parent::__construct();
 
-        $this->formatter = new Formatter\Logstash();
+        $writer = new StreamWriter('php://stderr');
 
-        //  If contractor values have not been provider then try to get values from the application config
-        if (empty($fileLogPath)) {
-            $fileLogPath = getenv('OPG_LPA_COMMON_APPLICATION_LOG_PATH') ?: '/var/log/application.log';
-        }
+        $writer->setFormatter(new SimpleFormatter([
+            'format' => SimpleFormatter::DEFAULT_FORMAT,
+            'dateTimeFormat' => 'Y-m-d\TH:i:s.u\Z',
+        ]));
 
-        $this->setFileLogPath($fileLogPath);
-
-        if (empty($sentryUri)) {
-            $sentryUri = getenv('OPG_LPA_COMMON_SENTRY_API_URI') ?: null;
-        }
-
-        if (empty(!$sentryUri)) {
-            $this->setSentryUri($sentryUri);
-        }
+        $this->addWriter($writer);
     }
 
     /**
@@ -71,52 +57,5 @@ class Logger extends ZendLogger
     public static function destroy()
     {
         self::$instance = null;
-    }
-
-    /**
-     * @param $logFilename
-     * @return ZendLogger
-     */
-    public function setFileLogPath($logFilename)
-    {
-        $streamWriter = new Stream($logFilename);
-
-        return $this->addWriter($streamWriter);
-    }
-
-    /**
-     * @param string $sentryUri
-     * @return ZendLogger
-     */
-    public function setSentryUri(string $sentryUri)
-    {
-        $sentryWriter = new Writer\Sentry($sentryUri);
-
-        return $this->addWriter($sentryWriter);
-    }
-
-    /**
-     * @param $clientConfig
-     * @param $endpoints
-     * @return ZendLogger
-     */
-    public function setSnsCredentials($clientConfig, $endpoints)
-    {
-        $snsWriter = new Writer\Sns($clientConfig, $endpoints);
-
-        return $this->addWriter($snsWriter);
-    }
-
-    /**
-     * @param string|\Zend\Log\Writer\WriterInterface $logWriter
-     * @param int $priority
-     * @param array|null $options
-     * @return ZendLogger
-     */
-    public function addWriter($logWriter, $priority = 1, array $options = null)
-    {
-        $logWriter->setFormatter($this->formatter);
-
-        return parent::addWriter($logWriter);
     }
 }
